@@ -15,6 +15,7 @@ Only required for Jenkins pipelines or if you are running Artifactory and/or Ope
 
 1. Git clone the following repo or git pull the latest version if you already have it.
 ```
+  git clone https://github.com/ossimlabs/omar-common.git
   git clone https://github.com/ossimlabs/omar-oldmar.git
 ```
 
