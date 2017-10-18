@@ -1,6 +1,6 @@
 spring:
   application:
-    name: oldmar-proxy
+    name: omar-oldmar
   cloud:
     config:
       enabled: false
