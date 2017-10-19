@@ -1,4 +1,4 @@
-package oldmar.app
+package omar.oldmar.app
 
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration

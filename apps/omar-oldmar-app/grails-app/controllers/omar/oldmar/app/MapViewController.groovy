@@ -1,4 +1,4 @@
-package oldmar.app
+package omar.oldmar.app
 
 import org.springframework.beans.factory.annotation.Value
 
