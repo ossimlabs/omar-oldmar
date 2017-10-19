@@ -389,13 +389,18 @@ class WfsProxyService
         resultType: params.find { it.key.toUpperCase() == 'RESULTTYPE' }?.value
       ]
 
+      def json = fetchJSON(getFeatureParams)
 
-//      def doc = getFeature( typeName, filter, outputFormat )
-//      results = [contentType: 'text/xml', text: doc]
+      if ( getFeatureParams.outputFormat?.equalsIgnoreCase('GML2') )
+      {
+        def doc = getFeatureGML( json, getFeatureParams.typeName )
 
-        def json = fetchJSON(getFeatureParams)
-
+        results = [contentType: 'text/xml', text: doc]
+      }
+      else if ( getFeatureParams.outputFormat.equalsIgnoreCase('JSON'))
+      {
         results = [contentType: 'application/json',  text: json]
+      }
 
       break
     }
@@ -590,10 +595,9 @@ class WfsProxyService
     new StreamingMarkupBuilder( encoding: 'utf-8' ).bind( x ).toString()
   }
 
-  def getFeature(def typeName, def filter, def outputFormat, def maxFeatures = 10, def resultType = 'results')
+  def getFeatureGML(def json, def typeName)
   {
-    def featureJSON = fetchJSON( typeName, filter, maxFeatures, resultType )
-    
+    def featureJSON = new JsonSlurper().parseText(json)
     def (prefix, layerName) = typeName?.split( ':' )
 
     def x = {
