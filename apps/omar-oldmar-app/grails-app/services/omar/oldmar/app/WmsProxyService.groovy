@@ -1,4 +1,4 @@
-package oldmar.app
+package omar.oldmar.app
 
 import grails.transaction.Transactional
 import org.springframework.beans.factory.annotation.Value

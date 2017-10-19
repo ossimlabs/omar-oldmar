@@ -1,4 +1,4 @@
-package oldmar.app
+package omar.oldmar.app
 
 import grails.transaction.Transactional
 import org.springframework.beans.factory.annotation.Value
@@ -366,7 +366,6 @@ class WfsProxyService
 
 //    println "${op} ${params}"
 
-    def contentType = 'text/xml'
     def results
 
     switch ( op.toUpperCase() )
@@ -374,7 +373,7 @@ class WfsProxyService
     case 'GETCAPABILITIES':
       def doc = getCapabilities()
 
-      results = [contentType: contentType, text: doc]
+      results = [contentType: 'text/xml', text: doc]
       break
     case 'DESCRIBEFEATURETYPE':
       def typeName = params.find { it.key.toUpperCase() == 'TYPENAME' }?.value
@@ -382,11 +381,22 @@ class WfsProxyService
       results = [contentType: 'text/xml', text: doc]
       break
     case 'GETFEATURE':
-      def typeName = params.find { it.key.toUpperCase() == 'TYPENAME' }?.value
-      def filter = params.find { it.key.toUpperCase() == 'FILTER' }?.value
-      def outputFormat = params.find { it.key.toUpperCase() == 'OUTPUTFORMAT' }?.value
-      def doc = getFeature( typeName, filter, outputFormat )
-      results = [contentType: 'text/xml', text: doc]
+      def getFeatureParams = [
+        typeName: params.find { it.key.toUpperCase() == 'TYPENAME' }?.value,
+        filter: params.find { it.key.toUpperCase() == 'FILTER' }?.value,
+        outputFormat: params.find { it.key.toUpperCase() == 'OUTPUTFORMAT' }?.value,
+        maxFeatures: params.find { it.key.toUpperCase() == 'MAXFEATURES' }?.value,
+        resultType: params.find { it.key.toUpperCase() == 'RESULTTYPE' }?.value
+      ]
+
+
+//      def doc = getFeature( typeName, filter, outputFormat )
+//      results = [contentType: 'text/xml', text: doc]
+
+        def json = fetchJSON(getFeatureParams)
+
+        results = [contentType: 'application/json',  text: json]
+
       break
     }
 
@@ -582,7 +592,6 @@ class WfsProxyService
 
   def getFeature(def typeName, def filter, def outputFormat, def maxFeatures = 10, def resultType = 'results')
   {
-
     def featureJSON = fetchJSON( typeName, filter, maxFeatures, resultType )
     
     def (prefix, layerName) = typeName?.split( ':' )
@@ -640,44 +649,25 @@ class WfsProxyService
     new StreamingMarkupBuilder( encoding: 'utf-8' ).bind( x ).toString()
   }
 
-//  def fetch()
-//  {
-//    def newParams = params.inject( [:] ) { a, b ->
-//      switch ( b.key?.toUpperCase() )
-//      {
-//      case 'CONTROLLER':
-//        break
-//      default:
-//        a[b.key] = b.value
-//      }
-//      a
-//    }.collect { "${it.key}=${URLEncoder.encode( it.value as String, 'UTF-8' )}" }.join( '&' )
-//
-//    def url = "${wfsEndpoint}?${newParams}".toURL()
-//    def urlConnection = url.openConnection();
-//    //def contentType = urlConnection.getHeaderField( "Content-Type" );
-//    def contentType = 'text/xml'
-//
-//  }
-
-
-  def fetchJSON(def typeName, def filter, def maxFeatures, def resultType)
+  def fetchJSON(def inputParams)
   {
     def wfsParams = [
         service: 'WFS',
         version: '1.1.0',
         request: 'GetFeature',
-        typeName: typeName,
-        filter: filter ?: "",
+        typeName: inputParams.typeName,
+        filter: inputParams.filter ?: "",
         outputFormat: 'JSON',
-        maxFeatures: maxFeatures,
-        resultType: resultType
+        maxFeatures: inputParams.maxFeatures,
+        resultType: inputParams.resultType
     ].collect {
       "${it.key}=${URLEncoder.encode( it.value as String, 'utf-8' )}"
     }.join( '&' )
 
     def url = "${wfsEndpoint}?${wfsParams}".toURL()
 
-    new JsonSlurper().parse( url )
+    //new JsonSlurper().parse( url )
+
+    url.text
   }
 }
