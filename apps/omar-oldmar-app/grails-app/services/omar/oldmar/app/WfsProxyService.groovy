@@ -662,8 +662,8 @@ class WfsProxyService
         typeName: inputParams.typeName,
         filter: inputParams.filter ?: "",
         outputFormat: 'JSON',
-        maxFeatures: inputParams.maxFeatures,
-        resultType: inputParams.resultType
+        maxFeatures: inputParams.maxFeatures ?: (inputParams.resultType == 'hits') ? : "10",
+        resultType: inputParams.resultType ?: "results"
     ].collect {
       "${it.key}=${URLEncoder.encode( it.value as String, 'utf-8' )}"
     }.join( '&' )
