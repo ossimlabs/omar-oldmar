@@ -13,7 +13,7 @@ class WmsProxyService
   {
 //    println params
 
-    def contentType = params.find { it.key.toUpperCase() == 'FORMAT' }?.value ?: 'image/png'
+    // def contentType = params.find { it.key.toUpperCase() == 'FORMAT' }?.value ?: 'image/png'
 
     def newParams = params.inject( [:] ) { a, b ->
       switch ( b.key?.toUpperCase() )
@@ -40,6 +40,7 @@ class WmsProxyService
     }.collect { "${it.key}=${URLEncoder.encode( it.value as String, 'UTF-8' )}" }.join( '&' )
 
     def url = "${wmsEndpoint}?${newParams}".toURL()
+    def contentType = url.openConnection().contentType
 
 //    println url
 
