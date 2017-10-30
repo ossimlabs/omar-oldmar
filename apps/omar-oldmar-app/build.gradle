@@ -2,7 +2,7 @@ buildscript {
     ext {
         grailsVersion = project.grailsVersion
         baseImage = "omar-base"
-        dockerFile ="docker/Dockerfile"     
+        dockerFile ="docker/Dockerfile"
     }
     if(System.env.OMAR_COMMON_PROPERTIES)
     {
@@ -65,6 +65,8 @@ dependencyManagement {
 
 dependencies {
 
+  compile "de.codecentric:spring-boot-admin-starter-client:1.5.4"
+  
   compile "org.springframework.cloud:spring-cloud-starter-config"
   compile "org.springframework.cloud:spring-cloud-starter-eureka"
 
