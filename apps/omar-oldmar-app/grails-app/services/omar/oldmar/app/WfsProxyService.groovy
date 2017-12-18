@@ -433,15 +433,24 @@ class WfsProxyService
       break
     case 'GETFEATURE':
       def typeName = xml.Query.@typeName.text() as String
-
       def filter = ( xml?.Query?.Filter ) ? xml?.Query?.collect {
         new StreamingMarkupBuilder().bindNode( it.Filter ).toString().trim()
       }?.first() : null
-
       def maxFeatures = xml.@maxFeatures?.text()
       def resultType = xml.@resultType?.text()
       def outputFormat = null
-      def doc = getFeature( typeName, filter, outputFormat, maxFeatures, resultType )
+
+      filter = filter.replace("BBox", "BBOX")      
+      HashMap getFeatureParams = [typeName:typeName, 
+//      filter:"",
+                                  filter:filter, 
+                                  outputFormat:outputFormat, 
+                                  maxFeatures:maxFeatures, 
+                                  resultType:resultType]
+
+      def json = fetchJSON(getFeatureParams)
+
+      def doc = getFeatureGML( json, getFeatureParams.typeName )
 
       results = [contentType: 'text/xml', text: doc]
 

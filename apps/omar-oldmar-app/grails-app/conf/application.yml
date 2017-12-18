@@ -176,7 +176,7 @@ oldmar:
     endpoint: https://omar-rel.ossim.io/omar-wms/wms
   wfs:
 #    endpoint: http://localhost/omar-wfs/wfs
-    endpoint: https://omar-rel.ossim.io//omar-wfs/wfs
+    endpoint: https://omar-rel.ossim.io/omar-wfs/wfs
   footprints:
 #    endpoint: http://localhost/omar-wms/footprints/getFootprints
     endpoint: https://omar-rel.ossim.io/omar-wms/footprints/getFootprints
