@@ -440,6 +440,7 @@ class WfsProxyService
       def resultType = xml.@resultType?.text()
       def outputFormat = null
 
+      filter = filter.replace("BBox", "BBOX")      
       HashMap getFeatureParams = [typeName:typeName, 
 //      filter:"",
                                   filter:filter, 
