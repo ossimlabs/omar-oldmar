@@ -29,23 +29,9 @@ spring:
 
 # Spring Actuator Endpoints are Disabled by Default
 endpoints:
-  enabled: true
-  health:
     enabled: true
-  actuator:
-    sensitive: false
-  beans:
-    sensitive: false
-  metrics:
-    sensitive: false
-  configprops:
-    sensitive: false
-  trace:
-    sensitive: false
-  mappings:
-    sensitive: false
-  env:
-    sensitive: false
+    jmx:
+        enabled: true
 
 ---
 grails:
