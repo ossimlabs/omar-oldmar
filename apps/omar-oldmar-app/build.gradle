@@ -68,6 +68,7 @@ dependencyManagement {
 }
 
 dependencies {
+  compile "io.ossim.omar.plugins:omar-core-plugin:+"
 
   compile "de.codecentric:spring-boot-admin-starter-client:${springBootAdminStarterClientV}"
   

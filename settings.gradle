@@ -9,10 +9,7 @@ def final O2_DEV_HOME = System.getenv('O2_DEV_HOME')
 
 if ( O2_DEV_HOME ) {
 
-   include 'omar-oldmar-app',
-	   'omar-core-plugin'
+   include 'omar-oldmar-app'
 
    project(':omar-oldmar-app').projectDir = "${O2_DEV_HOME}/omar-oldmar/apps/omar-oldmar-app" as File
-   project(':omar-core-plugin').projectDir = "${O2_DEV_HOME}/omar-core/plugins/omar-core-plugin" as File
-
 }
