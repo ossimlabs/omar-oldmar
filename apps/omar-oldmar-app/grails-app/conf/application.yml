@@ -1,4 +1,28 @@
 ---
+oldmar:
+  defaultTitle: 'OMAR 1.8.21: Login'
+  mapView:
+    baseLayer:
+      url: "${serverProtocol}://${serverName}/service-proxy/wmsProxy"
+      layers: o2-basemap-bright
+      format: image/jpeg
+    defaults:
+      wms:
+        layers: 180
+      footprints:
+        time: '1990-04-09T00:00:00Z/2017-12-31T00:00:00Z'
+        useDefault: false
+        format: image/gif
+  wms:
+    endpoint: http://omar-wms-app:8080/omar-wms/wms
+  wfs:
+    endpoint: http://omar-wfs-app:8080/omar-wfs/wfs
+  footprints:
+    endpoint: http://omar-geoscript-app:8080/omar-geoscript/footprints/getFootprints
+    defaultStyle: byFileType
+    overrideFormat: ''
+
+---
 grails:
     cors:
       enabled: true
