@@ -167,31 +167,31 @@ logging:
   config: classpath:logback.groovy
 
 ---
-oldmar:
-  defaultTitle: 'OMAR 1.8.21: Login'
-  mapView:
-    baseLayer:
-      url:  https://ahocevar.com/geoserver/wms
-      layers: ne:NE1_HR_LC_SR_W_DR
-      format: image/jpeg
-    defaults:
-      wms:
-        layers: 38
-      footprints:
-        time: '1990-04-09T00:00:00Z/2017-12-31T00:00:00Z'
-        useDefault: true
-        format: image/gif
-  wms:
-#    endpoint: http://localhost/omar-wms/wms
-    endpoint: https://omar.ossim.io/omar-wms/wms
-  wfs:
-#    endpoint: http://localhost/omar-wfs/wfs
-    endpoint: https://omar.ossim.io/omar-wfs/wfs
-  footprints:
-#    endpoint: http://localhost/omar-wms/footprints/getFootprints
-    endpoint: https://omar.ossim.io/omar-wms/footprints/getFootprints
-    defaultStyle: byFileType
-    overrideFormat: ''
+# oldmar:
+#   defaultTitle: 'OMAR 1.8.21: Login'
+#   mapView:
+#     baseLayer:
+#       url:  https://ahocevar.com/geoserver/wms
+#       layers: ne:NE1_HR_LC_SR_W_DR
+#       format: image/jpeg
+#     defaults:
+#       wms:
+#         layers: 38
+#       footprints:
+#         time: '1990-04-09T00:00:00Z/2017-12-31T00:00:00Z'
+#         useDefault: true
+#         format: image/gif
+#   wms:
+# #    endpoint: http://localhost/omar-wms/wms
+#     endpoint: https://omar.ossim.io/omar-wms/wms
+#   wfs:
+# #    endpoint: http://localhost/omar-wfs/wfs
+#     endpoint: https://omar.ossim.io/omar-wfs/wfs
+#   footprints:
+# #    endpoint: http://localhost/omar-wms/footprints/getFootprints
+#     endpoint: https://omar.ossim.io/omar-wms/footprints/getFootprints
+#     defaultStyle: byFileType
+#     overrideFormat: ''
 
 server:
   contextPath: /omar
