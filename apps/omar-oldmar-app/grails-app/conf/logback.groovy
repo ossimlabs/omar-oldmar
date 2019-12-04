@@ -8,6 +8,14 @@ appender('STDOUT', ConsoleAppender) {
     }
 }
 
+// This appender is used to only print the message, such as when printing JSON to
+// be parsed by Elasticsearch
+appender('JSON', ConsoleAppender) {
+    encoder(PatternLayoutEncoder) {
+        pattern = "%msg%n"
+    }
+}
+
 root(ERROR, ['STDOUT'])
 
 def targetDir = BuildSettings.TARGET_DIR
