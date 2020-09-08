@@ -158,7 +158,7 @@ podTemplate(
         }
       }
     }
-//
+
     stage("Clean Workspace"){
       if ("${CLEAN_WORKSPACE}" == "true")
         step([$class: 'WsCleanup'])
