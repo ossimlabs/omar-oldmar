@@ -45,7 +45,7 @@ resources:
     memory: 500Mi
     
 image:
-  name: omar-oldmar-app
+  name: omar-oldmar
   tag: dev
   pullPolicy: Always
 
