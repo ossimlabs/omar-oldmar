@@ -10,28 +10,74 @@
   {{- end }}
 {{- end -}}
 
+
+
+
+
+{{/* Templates for the volumeMounts section */}}
+
 {{- define "omar-oldmar.volumeMounts.configmaps" -}}
-{{- range $configmap := .Values.configmaps}}
-- name: {{ $configmap.internalName | quote }}
-  mountPath: {{ $configmap.mountPath | quote }}
-  {{- if $configmap.subPath }}
-  subPath: {{ $configmap.subPath | quote }}
+{{- range $configmapName, $configmapDict := .Values.configmaps}}
+- name: {{ $configmapName | quote }}
+  mountPath: {{ $configmapDict.mountPath | quote }}
+  {{- if $configmapDict.subPath }}
+  subPath: {{ $configmapDict.subPath | quote }}
+  {{- end }}
+{{- end -}}
+{{- end -}}
+
+{{- define "omar-oldmar.volumeMounts.pvcs" -}}
+{{- range $volumeName := .Values.volumeNames }}
+{{- $volumeDict := index $.Values.global.volumes $volumeName }}
+- name: {{ $volumeName }}
+  mountPath: {{ $volumeDict.mountPath }}
+  {{- if $volumeDict.subPath }}
+  subPath: {{ $volumeDict.subPath | quote }}
   {{- end }}
 {{- end -}}
 {{- end -}}
 
 {{- define "omar-oldmar.volumeMounts" -}}
 {{- include "omar-oldmar.volumeMounts.configmaps" . -}}
+{{- include "omar-oldmar.volumeMounts.pvcs" . -}}
+{{- if .Values.global.extraVolumeMounts }}
+{{ toYaml .Values.global.extraVolumeMounts }}
+{{- end }}
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts }}
+{{- end }}
 {{- end -}}
 
+
+
+
+
+{{/* Templates for the volumes section */}}
+
 {{- define "omar-oldmar.volumes.configmaps" -}}
-{{- range $configmap := .Values.configmaps}}
-- name: {{ $configmap.internalName | quote }}
+{{- range $configmapName, $configmapDict := .Values.configmaps}}
+- name: {{ $configmapName | quote }}
   configMap:
-    name: {{ $configmap.name | quote }}
+    name: {{ $configmapName | quote }}
+{{- end -}}
+{{- end -}}
+
+{{- define "omar-oldmar.volumes.pvcs" -}}
+{{- range $volumeName := .Values.volumeNames }}
+{{- $volumeDict := index $.Values.global.volumes $volumeName }}
+- name: {{ $volumeName }}
+  persistentVolumeClaim:
+    claimName: "{{ $.Values.appName }}-{{ $volumeName }}-pvc"
 {{- end -}}
 {{- end -}}
 
 {{- define "omar-oldmar.volumes" -}}
 {{- include "omar-oldmar.volumes.configmaps" . -}}
+{{- include "omar-oldmar.volumes.pvcs" . -}}
+{{- if .Values.global.extraVolumes }}
+{{ toYaml .Values.global.extraVolumes }}
+{{- end }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes }}
+{{- end }}
 {{- end -}}
