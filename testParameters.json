@@ -1,0 +1,30 @@
+{
+  "info": {
+    "title": "Test Parameters",
+    "format": {
+      "name": {
+        "method": ["get", "post", "delete", "etc..."],
+        "endpoint": "/controller/endpoint",
+        "in": ["query", "body", "path"],
+        "expected": ["good", "bad"],
+        "parameters": [{"parameterName1": "value1", "parameterName2": "value2"}, { "body": {} }, {"id":  "idValue"}]
+      }
+    }
+  },
+  "tests": {
+    "minWfs": {
+      "method": "get",
+      "endpoint": "/wfs",
+      "in": "query",
+      "expected": "good",
+      "parameters": {
+        "request": "GETFEATURE",
+        "typeName": "omar:raster_entry",
+        "filter": "",
+        "outputFormat": "JSON",
+        "maxFeatures": "10",
+        "resultType": "results"
+      }
+    }
+  }
+}

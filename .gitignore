@@ -16,6 +16,10 @@ bin
 packaged-chart
 *.lock
 charts/*.tgz
-cypress.json
 package-lock.json
 package.json
+cypress/plugins
+cypress/screenshots
+cypress/support
+cypress/videos
+results
