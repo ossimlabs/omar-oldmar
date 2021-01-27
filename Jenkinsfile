@@ -114,6 +114,7 @@ podTemplate(
       }
     }
 
+/*
     stage ("Publish Nexus"){	
       container('builder'){
           withCredentials([[$class: 'UsernamePasswordMultiBinding',
@@ -128,6 +129,7 @@ podTemplate(
           }
         }
     }
+*/
 
     stage('Docker build') {
       container('docker') {
