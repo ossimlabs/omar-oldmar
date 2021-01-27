@@ -1,12 +1,10 @@
 package omar.oldmar.app
 
-import grails.transaction.Transactional
 import org.springframework.beans.factory.annotation.Value
 import groovy.json.JsonSlurper
 import groovy.xml.StreamingMarkupBuilder
 import groovy.xml.XmlUtil
 
-@Transactional( readOnly = true )
 class WfsProxyService
 {
   @Value( '${oldmar.wfs.endpoint}' )
