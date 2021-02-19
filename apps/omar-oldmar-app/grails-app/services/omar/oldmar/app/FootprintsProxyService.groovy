@@ -1,9 +1,7 @@
 package omar.oldmar.app
 
-import grails.transaction.Transactional
 import org.springframework.beans.factory.annotation.Value
 
-@Transactional( readOnly = true )
 class FootprintsProxyService
 {
   @Value( '${oldmar.footprints.endpoint}' )

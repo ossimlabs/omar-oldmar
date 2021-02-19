@@ -20,7 +20,7 @@ podTemplate(
       privileged: true
     ),
     containerTemplate(
-      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/omar-builder:latest",
+      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/omar-builder:jdk11",
       name: 'builder',
       command: 'cat',
       ttyEnabled: true
@@ -114,6 +114,7 @@ podTemplate(
       }
     }
 
+/*
     stage ("Publish Nexus"){	
       container('builder'){
           withCredentials([[$class: 'UsernamePasswordMultiBinding',
@@ -128,6 +129,7 @@ podTemplate(
           }
         }
     }
+*/
 
     stage('Docker build') {
       container('docker') {
