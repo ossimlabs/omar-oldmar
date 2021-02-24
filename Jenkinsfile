@@ -38,6 +38,13 @@ podTemplate(
       ttyEnabled: true,
       alwaysPullImage: true
     ),
+    containerTemplate(
+        name: 'cypress',
+        image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/cypress/included:4.9.0",
+        ttyEnabled: true,
+        command: 'cat',
+        privileged: true
+    )
   ],
   volumes: [
     hostPathVolume(
