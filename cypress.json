@@ -1,5 +1,5 @@
 {
-  "baseUrl": "https://omar.ossim.io/omar-oldmar",
+  "baseUrl": "https://omar-dev.ossim.io/omar",
   "reporter": "junit",
   "video": false,
   "reporterOptions": {
