@@ -40,7 +40,7 @@ class WmsProxyService
     def url = "${wmsEndpoint}?${newParams}".toURL()
     def contentType = url.openConnection().contentType
 
-//    println url
+    println url
 
     [contentType: contentType, file: url.bytes]
   }
