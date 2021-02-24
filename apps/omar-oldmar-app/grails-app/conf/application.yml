@@ -194,7 +194,8 @@ logging:
 #     overrideFormat: ''
 
 server:
-  contextPath: /omar
+  servlet:
+    contextPath: /omar
 
 ---
 spring:

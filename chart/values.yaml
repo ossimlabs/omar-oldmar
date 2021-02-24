@@ -66,7 +66,7 @@ readinessProbe:
   periodSeconds: 15
   successThreshold: 1
   timeoutSeconds: 3
-  path: /omar/health
+  path: /omar/actuator/health
 
 
 terminationGracePeriodSeconds: 30
