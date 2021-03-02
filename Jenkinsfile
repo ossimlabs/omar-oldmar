@@ -38,6 +38,13 @@ podTemplate(
       ttyEnabled: true,
       alwaysPullImage: true
     ),
+    containerTemplate(
+        name: 'cypress',
+        image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/cypress/included:4.9.0",
+        ttyEnabled: true,
+        command: 'cat',
+        privileged: true
+    )
   ],
   volumes: [
     hostPathVolume(
@@ -112,6 +119,25 @@ podTemplate(
         """
         archiveArtifacts "apps/*/build/libs/*.jar"
       }
+    }
+
+    stage ("Run Cypress Test") {
+        container('cypress') {
+            try {
+                sh """
+                    cypress run --headless
+                """
+            } catch (err) {
+                sh """
+                    npm i -g xunit-viewer
+                    xunit-viewer -r results -o results/omar-oldmar-test-results.html
+                """
+                junit 'results/*.xml'
+                archiveArtifacts "results/*.xml"
+                archiveArtifacts "results/*.html"
+                s3Upload(file:'results/omar-oldmar-test-results.html', bucket:'ossimlabs', path:'cypressTests/')
+            }
+        }
     }
 
 /*
