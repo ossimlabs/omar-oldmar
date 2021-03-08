@@ -203,6 +203,7 @@ podTemplate(
     }
       
     /*  
+    // failing, not in current deploys for other apps
     stage('New Deploy'){
         container('kubectl-aws-helm') {
             withAWS(
@@ -224,9 +225,12 @@ podTemplate(
     } 
     */
 
+    /* 
+    // no longer needed:
     stage("Clean Workspace"){
       if ("${CLEAN_WORKSPACE}" == "true")
         step([$class: 'WsCleanup'])
     }
+    */
   }
 }
