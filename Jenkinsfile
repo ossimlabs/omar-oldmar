@@ -202,6 +202,7 @@ podTemplate(
       }
     }
       
+    /*  
     stage('New Deploy'){
         container('kubectl-aws-helm') {
             withAWS(
@@ -220,7 +221,8 @@ podTemplate(
                 }
             }
         }
-    }  
+    } 
+    */
 
     stage("Clean Workspace"){
       if ("${CLEAN_WORKSPACE}" == "true")
