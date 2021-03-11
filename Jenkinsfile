@@ -1,127 +1,100 @@
 properties([
-    parameters ([
-        booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean the workspace at the end of the run'),
+    parameters([
+        string(name: 'PROJECT_URL', defaultValue: 'https://github.com/ossimlabs/omar-oldmar', description: 'The project github URL'),
         string(name: 'DOCKER_REGISTRY_DOWNLOAD_URL', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'Repository of docker images')
     ]),
     pipelineTriggers([
-            [$class: "GitHubPushTrigger"]
+        [$class: "GitHubPushTrigger"]
     ]),
-    [$class: 'GithubProjectProperty', displayName: '', projectUrlStr: 'https://github.com/ossimlabs/omar-oldmar'],
+    [$class: 'GithubProjectProperty', displayName: '', projectUrlStr: '${PROJECT_URL}'],
     buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '3', daysToKeepStr: '', numToKeepStr: '20')),
     disableConcurrentBuilds()
-])
+    ])
+
 podTemplate(
-  containers: [
-    containerTemplate(
-      name: 'docker',
-      image: 'docker:19.03.8',
-      ttyEnabled: true,
-      command: 'cat',
-      privileged: true
-    ),
-    containerTemplate(
-      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/omar-builder:jdk11",
-      name: 'builder',
-      command: 'cat',
-      ttyEnabled: true
-    ),
-    containerTemplate(
-      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/alpine/helm:3.2.3",
-      name: 'helm',
-      command: 'cat',
-      ttyEnabled: true
-    ),
-    containerTemplate(
-      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/kubectl-aws-helm:latest",
-      name: 'kubectl-aws-helm',
-      command: 'cat',
-      ttyEnabled: true,
-      alwaysPullImage: true
-    ),
-    containerTemplate(
-        name: 'cypress',
-        image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/cypress/included:4.9.0",
-        ttyEnabled: true,
-        command: 'cat',
-        privileged: true
-    )
-  ],
-  volumes: [
-    hostPathVolume(
-      hostPath: '/var/run/docker.sock',
-      mountPath: '/var/run/docker.sock'
-    ),
-  ]
+    containers: [
+        containerTemplate(
+            name: 'docker',
+            image: 'docker:19.03.11',
+            ttyEnabled: true,
+            command: 'cat',
+            privileged: true
+        ),
+        containerTemplate(
+            image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/omar-builder:jdk11",
+            name: 'builder',
+            command: 'cat',
+            ttyEnabled: true
+        ),
+        containerTemplate(
+            image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/alpine/helm:3.2.3",
+            name: 'helm',
+            command: 'cat',
+            ttyEnabled: true
+        ),
+        containerTemplate(
+            name: 'git',
+            image: 'alpine/git:latest',
+            ttyEnabled: true,
+            command: 'cat',
+            envVars: [
+                envVar(key: 'HOME', value: '/root')
+                ]
+        ),
+        containerTemplate(
+            name: 'cypress',
+            image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/cypress/included:4.9.0",
+            ttyEnabled: true,
+            command: 'cat',
+            privileged: true
+        )
+      ],
+    volumes: [
+        hostPathVolume(
+            hostPath: '/var/run/docker.sock',
+            mountPath: '/var/run/docker.sock'
+        ),
+    ]
 )
+
 {
   node(POD_LABEL){
 
-    stage("Checkout branch")
-    {
+    stage("Checkout branch") {
+        APP_NAME = PROJECT_URL.tokenize('/').last()
         scmVars = checkout(scm)
-    
+        Date date = new Date()
+        String currentDate = date.format("YYYY-MM-dd-HH-mm-ss")
+        MASTER = "master"
         GIT_BRANCH_NAME = scmVars.GIT_BRANCH
         BRANCH_NAME = """${sh(returnStdout: true, script: "echo ${GIT_BRANCH_NAME} | awk -F'/' '{print \$2}'").trim()}"""
-        sh """
-        touch buildVersion.txt
-        grep buildVersion gradle.properties | cut -d "=" -f2 > "buildVersion.txt"
-        """
-        preVERSION = readFile "buildVersion.txt"
-        VERSION = preVERSION.substring(0, preVERSION.indexOf('\n'))
-
-        GIT_TAG_NAME = "omar-oldmar" + "-" + VERSION
+        VERSION = """${sh(returnStdout: true, script: "cat chart/Chart.yaml | grep version: | awk -F'version:' '{print \$2}'").trim()}"""
+        GIT_TAG_NAME = APP_NAME + "-" + VERSION
         ARTIFACT_NAME = "ArtifactName"
 
-        script {
-          if (BRANCH_NAME != 'master') {
-            buildName "${VERSION} - ${BRANCH_NAME}-SNAPSHOT"
-          } else {
-            buildName "${VERSION} - ${BRANCH_NAME}"
-          }
-        }
-      }
+            if (BRANCH_NAME == "${MASTER}") {
+                buildName "${VERSION}"
+                TAG_NAME = "${VERSION}"
+            }
+            else {
+                buildName "${BRANCH_NAME}-${currentDate}"
+                TAG_NAME = "${BRANCH_NAME}-${currentDate}"
+            }
+        
+    }
 
-    stage("Load Variables")
-    {
-      withCredentials([string(credentialsId: 'o2-artifact-project', variable: 'o2ArtifactProject')]) {
-        step ([$class: "CopyArtifact",
-          projectName: o2ArtifactProject,
-          filter: "common-variables.groovy",
-          flatten: true])
+    stage("Load Variables") {
+        withCredentials([string(credentialsId: 'o2-artifact-project', variable: 'o2ArtifactProject')]) {
+            step ([$class: "CopyArtifact",
+                projectName: o2ArtifactProject,
+                filter: "common-variables.groovy",
+                flatten: true])
         }
         load "common-variables.groovy"
-    
-        switch (BRANCH_NAME) {
-        case "master":
-          TAG_NAME = VERSION
-          break
-
-        case "dev":
-          TAG_NAME = "latest"
-          break
-
-        default:
-          TAG_NAME = BRANCH_NAME
-          break
-      }
-
-    DOCKER_IMAGE_PATH = "${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-oldmar"
-    
+        DOCKER_IMAGE_PATH = "${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/${APP_NAME}"
     }
-
-    stage('Build') {
-      container('builder') {
-        sh """
-        ./gradlew assemble \
-            -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
-        ./gradlew copyJarToDockerDir \
-            -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
-        """
-        archiveArtifacts "apps/*/build/libs/*.jar"
-      }
-    }
-
-    stage ("Run Cypress Test") {
+      
+      stage ("Run Cypress Test") {
         container('cypress') {
             try {
                 sh """
@@ -139,6 +112,20 @@ podTemplate(
             }
         }
     }
+
+    stage('Build') {
+      container('builder') {
+        sh """
+        ./gradlew assemble \
+            -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
+        ./gradlew copyJarToDockerDir \
+            -PossimMavenProxy=${MAVEN_DOWNLOAD_URL}
+        """
+        archiveArtifacts "apps/*/build/libs/*.jar"
+      }
+    }
+
+    
 
 /*
     stage ("Publish Nexus"){	
@@ -215,6 +202,8 @@ podTemplate(
       }
     }
       
+    /*  
+    // failing, not in current deploys for other apps
     stage('New Deploy'){
         container('kubectl-aws-helm') {
             withAWS(
@@ -233,11 +222,15 @@ podTemplate(
                 }
             }
         }
-    }  
+    } 
+    */
 
+    /* 
+    // no longer needed:
     stage("Clean Workspace"){
       if ("${CLEAN_WORKSPACE}" == "true")
         step([$class: 'WsCleanup'])
     }
+    */
   }
 }
