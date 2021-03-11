@@ -1,12 +1,12 @@
 package omar.oldmar.app
 
-import grails.transaction.Transactional
 import org.springframework.beans.factory.annotation.Value
 import groovy.json.JsonSlurper
 import groovy.xml.StreamingMarkupBuilder
 import groovy.xml.XmlUtil
 
-@Transactional( readOnly = true )
+import java.time.Instant
+
 class WfsProxyService
 {
   @Value( '${oldmar.wfs.endpoint}' )
@@ -626,7 +626,7 @@ class WfsProxyService
       ] )
       wfs.FeatureCollection( xmlns: "http://www.opengis.net/wfs",
           'xsi:schemaLocation': "${featureSchemaURL} http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd",
-          numberOfFeatures: featureJSON?.totalFeatures, timeStamp: new Date().format( "yyy-MM-dd'T'HH:mm:ss.SSSZ" )
+          numberOfFeatures: featureJSON?.totalFeatures, timeStamp: Instant.now().toString()
       ) {
 
         gml.boundedBy {

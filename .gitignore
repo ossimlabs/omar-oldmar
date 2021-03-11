@@ -10,8 +10,16 @@ build/
 .project
 .settings
 .classpath
+node_modules
 docker/*.jar
 bin
 packaged-chart
 *.lock
 charts/*.tgz
+package-lock.json
+package.json
+cypress/plugins
+cypress/screenshots
+cypress/support
+cypress/videos
+results

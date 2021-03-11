@@ -1,0 +1,102 @@
+{
+  "info": {
+    "title": "Test Parameters",
+    "format": {
+      "name": {
+        "method": ["get", "post", "delete", "etc..."],
+        "endpoint": "/controller/endpoint",
+        "in": ["query", "body", "path"],
+        "expected": ["good", "bad"],
+        "parameters": [{"parameterName1": "value1", "parameterName2": "value2"}, { "body": {} }, {"id":  "idValue"}]
+      }
+    }
+  },
+  "tests": {
+    "minFootprints": {
+      "method": "get",
+      "endpoint": "/wms/footprints",
+      "in": "query",
+      "expected": "good",
+      "parameters": {
+        "layers": "omar:raster_entry",
+        "srs": "epsg:4326",
+        "bbox": "-180,-90,180,90",
+        "width": "1024",
+        "height": "512",
+        "format": "image/gif"
+      }
+    },
+    "maxFootprints": {
+      "method": "get",
+      "endpoint": "/wms/footprints",
+      "in": "query",
+      "expected": "good",
+      "parameters": {
+        "service": "wms",
+        "version": "1.1.1",
+        "request": "GetMap",
+        "layers": "omar:raster_entry",
+        "srs": "epsg:4326",
+        "bbox": "-180,-90,180,90",
+        "width": "1024",
+        "height": "512",
+        "format": "image/gif"
+      }
+    },
+    "minWms": {
+      "method": "get",
+      "endpoint": "/ogc/wms",
+      "in": "query",
+      "expected": "good",
+      "parameters": {
+        "version": "1.1.1",
+        "request": "GetCapabilities"
+      }
+    },
+    "maxWms": {
+      "method": "get",
+      "endpoint": "/ogc/wms",
+      "in": "query",
+      "expected": "good",
+      "parameters": {
+        "service": "WMS",
+        "version": "1.1.1",
+        "request": "getmap",
+        "layers": "13",
+        "srs": "epsg%3A4326",
+        "bbox": "-94.3066%2C29.9707%2C-94.2188%2C30.0586",
+        "format": "image%2Fpng",
+        "width": "256",
+        "height": "256"
+      }
+    },
+    "minWfs": {
+      "method": "get",
+      "endpoint": "/wfs",
+      "in": "query",
+      "expected": "good",
+      "parameters": {
+        "outputFormat": "JSON",
+        "request": "GetFeature",
+        "typeName": "omar%3Araster_entry"
+      }
+    },
+    "maxWfs": {
+      "method": "get",
+      "endpoint": "/wfs",
+      "in": "query",
+      "expected": "good",
+      "parameters": {
+        "maxFeatures": "10",
+        "filter": "",
+        "outputFormat": "JSON",
+        "request": "GetFeature",
+        "service": "WFS",
+        "sortBy": "acquisition_date%2BD",
+        "startIndex": "0",
+        "typeName": "omar%3Araster_entry",
+        "version": "1.1.0"
+      }
+    }
+  }
+}

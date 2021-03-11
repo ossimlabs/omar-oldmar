@@ -194,4 +194,23 @@ logging:
 #     overrideFormat: ''
 
 server:
-  contextPath: /omar
+  servlet:
+    contextPath: /omar
+
+---
+spring:
+  application:
+    name: omar-oldmar
+  cloud:
+    discovery:
+      enabled: ${SPRING_CLOUD_DISCOVERY_ENABLED:false}
+    service-registry:
+      auto-registration:
+        enabled: ${spring.cloud.discovery.enabled}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://omar-eureka-server:8761/omar-eureka-server/eureka}
+  instance:
+    preferIpAddress: true

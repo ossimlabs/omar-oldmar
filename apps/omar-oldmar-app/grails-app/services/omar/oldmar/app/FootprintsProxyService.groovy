@@ -1,9 +1,7 @@
 package omar.oldmar.app
 
-import grails.transaction.Transactional
 import org.springframework.beans.factory.annotation.Value
 
-@Transactional( readOnly = true )
 class FootprintsProxyService
 {
   @Value( '${oldmar.footprints.endpoint}' )
@@ -29,7 +27,7 @@ class FootprintsProxyService
         {
           a['LAYERS'] = 'omar:raster_entry'
         }
-        else if ( params['LAYERS'] == 'omar:video_data_set' )
+        else 
         {
           a['LAYERS'] = b.value
         }
@@ -59,10 +57,14 @@ class FootprintsProxyService
       a
     }
 
-    // println newParams
+    println newParams
     newParams = newParams.collect { "${it.key}=${URLEncoder.encode( it.value as String, 'UTF-8' )}" }.join( '&' )
 
     def url = "${footprintsEndpoint}?${newParams}".toURL()
+
+
+    println url
+
     def bytes
 
     try {
