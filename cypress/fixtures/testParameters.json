@@ -49,6 +49,7 @@
       "in": "query",
       "expected": "good",
       "parameters": {
+        "service": "WMS",
         "version": "1.1.1",
         "request": "GetCapabilities"
       }
