@@ -1,4 +1,5 @@
-FROM nexus-docker-public-hosted.ossim.io/openjdk11:alpine-slim
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 
 ENV HOME /home/omar
 RUN adduser -D -h $HOME -s /sbin/nologin -u 1001 omar
